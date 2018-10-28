@@ -52,28 +52,6 @@ namespace KCKgame
                 System.Threading.Thread.Sleep(100);
                 ClearKeyBuffer();// wyczyszczenie input buffera klawiatury (nie kolejkuje sie bardzo duzo inputow na raz)
                 keyinfo = Console.ReadKey();
-                /*if (keyinfo.Key.ToString() == "DownArrow")
-                    stage.MovePlayerY(1);
-                else if (keyinfo.Key.ToString() == "UpArrow")
-                    stage.MovePlayerY(-1);
-                else if (keyinfo.Key.ToString() == "LeftArrow")
-                    stage.MovePlayerX(-1);
-                else if (keyinfo.Key.ToString() == "RightArrow")
-                    stage.MovePlayerX(1);
-                else if (keyinfo.Key.ToString() == "A")
-                    stage.Attack();
-                else if (keyinfo.Key.ToString() == "S")
-                    stage.UseItem();
-                else if (keyinfo.Key.ToString() == "D")
-                    stage.PickupItem();
-                else if (keyinfo.Key.ToString() == "F")
-                    stage.PreviousItem();
-                else if (keyinfo.Key.ToString() == "G")
-                    stage.NextItem();
-                else if (keyinfo.Key.ToString() == "L")
-                    stage.DeleteCurrentItem();
-                else if (keyinfo.Key.ToString() == "X")
-                    stage.GetHelp();*/
                 switch (keyinfo.Key.ToString())
                 {
                     case "DownArrow":
@@ -108,11 +86,12 @@ namespace KCKgame
                         break;
                     case "X":
                         stage.GetHelp();
-                        break;
+                            break;
                 }
-                Console.Clear();
-                stage.DrawConsoleWindow();
-            }
+                    Console.Clear();
+                    stage.DrawConsoleWindow();
+
+                }
             while (keyinfo.Key != ConsoleKey.Escape);
             this.Close();
 

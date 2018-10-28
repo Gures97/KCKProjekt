@@ -20,7 +20,7 @@ namespace KCKgame
         public static int WIDTH = 200;
         Terrain[][] stage = new Terrain[HEIGHT][];      //Stworzenie tablicy przechowujacej teren
         Entity[][] beings = new Entity[HEIGHT][];       //Stworzenie tablicy przechowujacej istoty zywe
-        int currentPosX = 5;                            //Inicjalizowanie podstawowych wartosci
+        int currentPosX = 10;                            //Inicjalizowanie podstawowych wartosci
         int currentPosY = 5;                            
         int allInventory = 1;
         int currentInventory = 1;
@@ -151,7 +151,7 @@ namespace KCKgame
             MakePassage(99, 58, 101, 58);
             MakePassage(6, 183, 100, 86);
 
-
+            beings[currentPosY][currentPosX] = character;
             currentSword = new Item(1, 1, 1, 0);
             character.WearItem(currentSword);
             currentArmor = new Item(2, 1, 0, 2);
@@ -258,7 +258,11 @@ namespace KCKgame
 
         public void GetHelp()
         {
-
+            Console.Clear();
+            System.Console.WriteLine("\nStrzalki na klawiaturze = Poruszanie sie\nA = Atak \nS = Uzyj eliksiru/zmien obecna bron na wybrana \nD = Podnies przedmiot pod soba \nF = Przewin ekwipunek w lewo \nG = Przewin ekwipunek w prawo \nL = Usun obecnie wybrany przedmiot z ekwipunku \nESC = Wyjdz z gry \n\nWcisnij 'X', aby wrocic do gry");
+            ConsoleKeyInfo keyinfo;
+            do { keyinfo = Console.ReadKey(); } //Czeka na wcisniecie przycisku X na klawiaturze
+            while (keyinfo.Key.ToString() != "X");
         }
 
         public void DeleteItem(Item i)
