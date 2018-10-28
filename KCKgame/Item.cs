@@ -15,7 +15,7 @@ namespace KCKgame
         private String description = "Przedmiot o nieznanym pochodzeniu";
         private int life, attack, armor, restoration=3, charges=1;
 
-        public void ChangeName(String s)
+        public void SetName(String s)
         {
             String temp = "";
             if (type == 1)
@@ -28,7 +28,7 @@ namespace KCKgame
                 temp+=" [^] ";
             name = temp + s;
         }
-        public void ChangeDescription(String s) { description = s; }
+        public void SetDescription(String s) { description = s; }
         public String GetName() { return name; }
         public String GetDescription() { return description; }
         public int GetItemType() { return type; }
@@ -41,8 +41,8 @@ namespace KCKgame
 
         public Item(int t)
         {
-            ChangeDescription("");
-            ChangeName("Empty");
+            SetDescription("");
+            SetName("Pusty");
         }
 
         public Item(int t, int l, int a, int ar)
@@ -50,11 +50,11 @@ namespace KCKgame
             CanEnterNow();
             type = t;
             if (type == 1)
-                ChangeName("Tajemniczy miecz");
+                SetName("Tajemniczy miecz");
             else if (type == 2)
-                ChangeName("Tajemnicza zbroja");
+                SetName("Tajemnicza zbroja");
             else if (type == 3)
-                ChangeName("Tajemniczy artefakt");
+                SetName("Tajemniczy artefakt");
 
             life = l;
             attack = a;

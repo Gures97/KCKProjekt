@@ -16,14 +16,14 @@ namespace KCKgame
         public void ChangeLevel(int i) { if (level + i >= 1) level += i; }
         public void ChangeLife(int i) { life += i; }
         public void ChangeCurrentLife(int i) { currentLife += i; }
-        public void SetCurrentLife(int i) { currentLife = i; }
         public void ChangeArmor(int i) { armor += i; }
         public void ChangeAttack(int i) { attack += i; }
-        public int GiveLevel() { return level; }
-        public int GiveLife() { return life; }
-        public int GiveCurrentLife() { return currentLife; }
-        public int GiveArmor() { return armor; }
-        public int GiveAttack() { return attack; }
+        public int GetLevel() { return level; }
+        public int GetLife() { return life; }
+        public int GetCurrentLife() { return currentLife; }
+        public int GetArmor() { return armor; }
+        public int GetAttack() { return attack; }
+        public void SetCurrentLife(int i) { currentLife = i; }
         public void WearItem(Item i)
         {
             ChangeLife(i.GetLife());

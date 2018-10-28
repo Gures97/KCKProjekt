@@ -16,8 +16,8 @@ namespace KCKgame
 
         public Map() { }
 
-        public static int HEIGHT = 100;                 //Uustalenie wielkosci mapy
-        public static int WIDTH = 100;
+        public static int HEIGHT = 200;                 //Uustalenie wielkosci mapy
+        public static int WIDTH = 200;
         Terrain[][] stage = new Terrain[HEIGHT][];      //Stworzenie tablicy przechowujacej teren
         Entity[][] beings = new Entity[HEIGHT][];       //Stworzenie tablicy przechowujacej istoty zywe
         int currentPosX = 5;                            //Inicjalizowanie podstawowych wartosci
@@ -26,21 +26,10 @@ namespace KCKgame
         int currentInventory = 1;
         Item[] inventory = new Item[99];
 
-        private void AddRoom(int a1, int b1, int a2, int b2) //Funkcja ta przyjmuje wspolrzedne gornego lewego i dolnego prawego rogu
-        {                                                    //i rysuje na tej podstawie pokoj, otaczajac go scianami i wypelniajac wolna przestrzenia
-            for (int i = b1; i < b2 + 1; i++)
-                stage[a1][i] = new Wall();
-            for (int i = a1 + 1; i < a2 + 1; i++)
-                stage[i][b1] = new Wall();
-            for (int i = a1 + 1; i < a2 + 1; i++)
-                stage[i][b2] = new Wall();
-            for (int i = b1 + 1; i < b2; i++)
-                stage[a2][i] = new Wall();
-
-            for (int i = a1 + 1; i < a2; i++)
-                for (int j = b1 + 1; j < b2; j++)
-                    stage[i][j] = new Empty();
-
+        private void MakePassage(int a1, int b1, int a2, int b2)  //Funkcja przyjmuje wspolrzedne wejscia, nastepnie wspolrzedne wyjscia i tworzy te dwa obiekty
+        {
+            stage[a2][b2] = new SecretPassageExit(a2, b2);
+            stage[a1][b1] = new SecretPassageEntrance((SecretPassageExit)stage[a2][b2]);
 
         }
 
@@ -112,50 +101,55 @@ namespace KCKgame
                 for (int j = 0; j < WIDTH; j++)
                     beings[i][j] = null;
 
-            AddRoom(0, 0, 10, 10);
-            AddRoom(10, 5, 25, 15);
-            AddRoom(3, 10, 7, 40);
-            AddRoom(0, 40, 20, 55);
-            AddRoom(20, 15, 30, 50);
-            stage[10][7] = new Empty();
-            stage[4][10] = new Empty();
-            stage[5][40] = new Empty();
-            stage[20][45] = new Empty();
-            stage[22][15] = new Empty();
-            stage[1][1] = RandomizeEquipment(0);
-            stage[1][2] = RandomizeEquipment(0);
-            stage[1][3] = RandomizeEquipment(2);
-            stage[1][4] = RandomizeEquipment(2);
-            stage[1][5] = RandomizeEquipment(4);
-            stage[1][6] = RandomizeEquipment(4);
-            stage[1][7] = RandomizeEquipment(10);
-            Item mieczZawalistosci = new Item(1, -5, 25, 0);
-            mieczZawalistosci.ChangeName("Spoko mieczyk");
-            mieczZawalistosci.ChangeDescription("Zabiera sporo zycia, ale za to mocno wali");
-            stage[1][8] = mieczZawalistosci;
-            stage[2][1] = RandomizePotion(0);
-            stage[2][2] = RandomizePotion(0);
-            stage[2][3] = RandomizePotion(2);
-            stage[2][4] = RandomizePotion(2);
-            stage[2][5] = RandomizePotion(4);
-            stage[2][6] = RandomizePotion(4);
-            stage[2][7] = RandomizePotion(10);
-            Item eliksirZelaza = new Item(4, 0, 0, 5, 0, 1);
-            eliksirZelaza.ChangeName("Eliksir zelaza");
-            eliksirZelaza.ChangeDescription("Sprawia, ze skora staje sie tak mocna jak najwytrzymalsza stal");
-            stage[2][8] = eliksirZelaza;
-            for (int i = 8; i < 20; i++)
-                stage[i][28] = new Wall();
-            stage[7][28] = new SecretPassageExit(7, 28);
-            stage[20][28] = new SecretPassageEntrance((SecretPassageExit)stage[7][28]);
-            beings[currentPosX][currentPosY] = new Player();
-            stage[8][55] = new SecretPassageExit(8, 55);
-            stage[17][5] = new SecretPassageEntrance((SecretPassageExit)stage[8][55]);
-            stage[14][5] = new SecretPassageExit(14, 5);
-            stage[5][55] = new SecretPassageEntrance((SecretPassageExit)stage[14][5]);
-
-            beings[8][8] = new Enemy();
-            beings[6][6] = new Boss();
+            String[] lines = System.IO.File.ReadAllLines("mapa.txt");   //Wczytanie dwuwymiarowej tablicy 0,1,2 z pliku textowej i stworzenie na jej podstawie mapy
+            for (int i = 0; i < 140; i++)                               //Plik moze byc edytowany poprzez zmiane rozszerzenia na .csv i poprzed excel/open office
+                for (int j = 0; j < 200; j++)
+                {
+                    if (lines[i][j * 2] == '0')
+                        stage[i][j] = new Empty();
+                    else if (lines[i][j * 2] == '1')
+                        stage[i][j] = new Wall();
+                }
+            MakePassage(79, 72, 39, 35);
+            MakePassage(71, 65, 44, 42);
+            MakePassage(64, 60, 52, 51);
+            MakePassage(75, 72, 39, 39);
+            MakePassage(67, 65, 44, 47);
+            MakePassage(60, 60, 46, 51);
+            MakePassage(50, 58, 125, 175);
+            MakePassage(56, 58, 128, 192);
+            MakePassage(125, 192, 129, 12);
+            MakePassage(128, 175, 128, 13);
+            MakePassage(118, 2, 33, 25);
+            MakePassage(128, 175, 128, 13);
+            MakePassage(118, 23, 33, 29);
+            MakePassage(138, 2, 16, 48);
+            MakePassage(32, 81, 137, 27);
+            MakePassage(138, 23, 137, 27);
+            MakePassage(16, 61, 32, 81);
+            MakePassage(42, 81, 27, 94);
+            MakePassage(17, 94, 95, 183);
+            MakePassage(30, 145, 32, 145);
+            MakePassage(32, 146, 30, 146);
+            MakePassage(84, 77, 131, 175);
+            MakePassage(130, 192, 54, 122);
+            MakePassage(8, 97, 12, 80);
+            MakePassage(13, 80, 9, 97);
+            MakePassage(117, 62, 117, 66);
+            MakePassage(121, 66, 121, 62);
+            MakePassage(115, 72, 112, 79);
+            MakePassage(113, 80, 118, 80);
+            MakePassage(125, 105, 128, 105);
+            MakePassage(124, 108, 124, 106);
+            MakePassage(132, 105, 134, 105);
+            MakePassage(134, 106, 132, 106);
+            MakePassage(111, 101, 106, 113);
+            MakePassage(108, 113, 111, 105);
+            MakePassage(106, 131, 106, 151);
+            MakePassage(107, 154, 108, 131);
+            MakePassage(101, 48, 99, 48);
+            MakePassage(99, 58, 101, 58);
+            MakePassage(6, 183, 100, 86);
 
 
             currentSword = new Item(1, 1, 1, 0);
@@ -209,8 +203,8 @@ namespace KCKgame
                                                                         //jest ilosc ladunkow. Jesli wynosi ona 0, przedmiot jest usuwany
                 Item temp = inventory[currentInventory];
                 character.WearItem(temp);
-                if (character.GiveCurrentLife() + temp.GetRestoration() > character.GiveLife())
-                    character.SetCurrentLife(character.GiveLife());
+                if (character.GetCurrentLife() + temp.GetRestoration() > character.GetLife())
+                    character.SetCurrentLife(character.GetLife());
                 else
                     character.ChangeCurrentLife(temp.GetRestoration());
                 temp.ChangeCharges(-1);
@@ -392,10 +386,10 @@ namespace KCKgame
             //Ponizej przeprowadzone jest aktualizowanie interfejsu w zaleznosci od tego, jakie wartosci znajduja sie w kazdym z pol
             if (inventory[currentInventory] == null)
                 PreviousItem();
-            consoleInterface[0] = ("<3 x " + (character.GiveCurrentLife().ToString()) + "/" + character.GiveLife().ToString()).PadRight(12)
-                + "|" + ("   Poziom: " + character.GiveLevel().ToString()).PadRight(15)
-                + "|" + ("    Atak: " + character.GiveAttack().ToString()).PadRight(15)
-                + "|" + ("    Pancerz: " + character.GiveArmor().ToString()).PadRight(17)
+            consoleInterface[0] = ("<3 x " + (character.GetCurrentLife().ToString()) + "/" + character.GetLife().ToString()).PadRight(12)
+                + "|" + ("   Poziom: " + character.GetLevel().ToString()).PadRight(15)
+                + "|" + ("    Atak: " + character.GetAttack().ToString()).PadRight(15)
+                + "|" + ("    Pancerz: " + character.GetArmor().ToString()).PadRight(17)
                 + "|  (X) = Pomoc/Instrukcja";
             consoleInterface[3] = "| =|=>   Miecz:  " + currentSword.GetFirstProperty().PadRight(7);
             consoleInterface[4] = "|                " + currentSword.GetSecondProperty().PadRight(10);
