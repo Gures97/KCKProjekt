@@ -14,7 +14,7 @@ namespace KCKgame
         private String[] properties = new String[2];
         private String description = "Przedmiot o nieznanym pochodzeniu";
         private int life, attack, armor, restoration=3, charges=1;
-
+        // 123
         public void SetName(String s)
         {
             String temp = "";
