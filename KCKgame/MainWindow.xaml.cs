@@ -88,6 +88,7 @@ namespace KCKgame
                         stage.GetHelp();
                             break;
                 }
+                stage.UpdateEnemies();
                     Console.Clear();
                     stage.DrawConsoleWindow();
 

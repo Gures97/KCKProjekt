@@ -8,7 +8,7 @@ namespace KCKgame
 {
     class Map
     {
-        Player character = new Player();
+        public Player character = new Player();
 
         Item currentSword;
         Item currentArmor;
@@ -18,13 +18,15 @@ namespace KCKgame
 
         public static int HEIGHT = 200;                 //Uustalenie wielkosci mapy
         public static int WIDTH = 200;
-        Terrain[][] stage = new Terrain[HEIGHT][];      //Stworzenie tablicy przechowujacej teren
+        public Terrain[][] stage = new Terrain[HEIGHT][];      //Stworzenie tablicy przechowujacej teren
         Entity[][] beings = new Entity[HEIGHT][];       //Stworzenie tablicy przechowujacej istoty zywe
-        int currentPosX = 10;                            //Inicjalizowanie podstawowych wartosci
-        int currentPosY = 5;                            
+        public int currentPosX = 10;                            //Inicjalizowanie podstawowych wartosci
+        public int currentPosY = 5;                            
         int allInventory = 1;
         int currentInventory = 1;
         Item[] inventory = new Item[99];
+
+        List<Enemy> enemies = new List<Enemy>();
 
         private void MakePassage(int a1, int b1, int a2, int b2)  //Funkcja przyjmuje wspolrzedne wejscia, nastepnie wspolrzedne wyjscia i tworzy te dwa obiekty
         {
@@ -160,6 +162,9 @@ namespace KCKgame
             character.WearItem(currentArtefact);
             inventory[0] = new Item(0);
             inventory[1] = new Item(4, 0, 0, 0, 2, 5);
+
+            Encoding.GetEncoding("UTF-32"); //moze byc niekonieczne
+            SpawnEnemies(1, 100);
 
         }
 
@@ -391,24 +396,24 @@ namespace KCKgame
             if (inventory[currentInventory] == null)
                 PreviousItem();
             consoleInterface[0] = ("<3 x " + (character.GetCurrentLife().ToString()) + "/" + character.GetLife().ToString()).PadRight(12)
-                + "|" + ("   Poziom: " + character.GetLevel().ToString()).PadRight(15)
-                + "|" + ("    Atak: " + character.GetAttack().ToString()).PadRight(15)
-                + "|" + ("    Pancerz: " + character.GetArmor().ToString()).PadRight(17)
-                + "|  (X) = Pomoc/Instrukcja";
-            consoleInterface[3] = "| =|=>   Miecz:  " + currentSword.GetFirstProperty().PadRight(7);
-            consoleInterface[4] = "|                " + currentSword.GetSecondProperty().PadRight(10);
-            consoleInterface[8] = "| /[]\\  Zbroja:  " + currentArmor.GetFirstProperty().PadRight(7);
-            consoleInterface[9] = "|                " + currentArmor.GetSecondProperty().PadRight(10);
-            consoleInterface[13] = "| <O> Artefakt:  " + currentArtefact.GetFirstProperty().PadRight(7);
-            consoleInterface[14] = "|                " + currentArtefact.GetSecondProperty().PadRight(10);
-            consoleInterface[20] = "| " + inventory[currentInventory].GetName();
-            consoleInterface[22] = "|   <- (F)" + currentInventory.ToString().PadLeft(4) + "/" + allInventory.ToString().PadRight(4) + "(G) ->";
-            consoleInterface[25] = "| " + inventory[currentInventory].GetFirstProperty();
-            consoleInterface[26] = "| " + inventory[currentInventory].GetSecondProperty();
-            consoleInterface[28] = "| Opis: " + SplitString(inventory[currentInventory].GetDescription(), 0, 20);
-            consoleInterface[29] = "| " + SplitString(inventory[currentInventory].GetDescription(), 20, 45);
-            consoleInterface[30] = "| " + SplitString(inventory[currentInventory].GetDescription(), 45, 70);
-            consoleInterface[31] = "| " + SplitString(inventory[currentInventory].GetDescription(), 70, 95);
+                + "║" + ("   Poziom: " + character.GetLevel().ToString()).PadRight(15)
+                + "║" + ("    Atak: " + character.GetAttack().ToString()).PadRight(15)
+                + "║" + ("    Pancerz: " + character.GetArmor().ToString()).PadRight(17)
+                + "║  (X) = Pomoc/Instrukcja";
+            consoleInterface[3] = "║ =|=>   Miecz:  " + currentSword.GetFirstProperty().PadRight(7);
+            consoleInterface[4] = "║                " + currentSword.GetSecondProperty().PadRight(10);
+            consoleInterface[8] = "║ /[]\\  Zbroja:  " + currentArmor.GetFirstProperty().PadRight(7);
+            consoleInterface[9] = "║                " + currentArmor.GetSecondProperty().PadRight(10);
+            consoleInterface[13] = "║ <O> Artefakt:  " + currentArtefact.GetFirstProperty().PadRight(7);
+            consoleInterface[14] = "║                " + currentArtefact.GetSecondProperty().PadRight(10);
+            consoleInterface[20] = "║ " + inventory[currentInventory].GetName();
+            consoleInterface[22] = "║   <- (F)" + currentInventory.ToString().PadLeft(4) + "/" + allInventory.ToString().PadRight(4) + "(G) ->";
+            consoleInterface[25] = "║ " + inventory[currentInventory].GetFirstProperty();
+            consoleInterface[26] = "║ " + inventory[currentInventory].GetSecondProperty();
+            consoleInterface[28] = "║ Opis: " + SplitString(inventory[currentInventory].GetDescription(), 0, 20);
+            consoleInterface[29] = "║ " + SplitString(inventory[currentInventory].GetDescription(), 20, 45);
+            consoleInterface[30] = "║ " + SplitString(inventory[currentInventory].GetDescription(), 45, 70);
+            consoleInterface[31] = "║ " + SplitString(inventory[currentInventory].GetDescription(), 70, 95);
 
 
 
@@ -440,44 +445,76 @@ namespace KCKgame
 
         }
 
+        public void SpawnEnemies(int tier, int count)
+        {
+            int enemyX, enemyY;
+            Random r = new Random();
+            for (int i = 0; i < count; i++)
+            {
+                do
+                {
+                    enemyX = r.Next(WIDTH);
+                    enemyY = r.Next(HEIGHT);
+                } while (stage[enemyX][enemyY].Enterable() == false); //losuje aż wylosuje punkt w ktorym moze umiescic potwora
+                Enemy e = new Enemy(this, enemyX, enemyY, tier);
+                enemies.Add(e);
+                beings[enemyX][enemyY] = e;
+            }
+        }
+        public void UpdateEnemies()
+        {
+            foreach(Enemy e in enemies)
+            {
+                int oldX = e.enemyX;
+                int oldY = e.enemyY;
+                e.EnemyMovement();
+                if (e.enemyX != oldX && e.enemyY != oldY)
+                {
+                    beings[e.enemyX][e.enemyY] = beings[oldX][oldY];
+                    beings[oldX][oldY] = null;
+                }
+                
+            }
+        }
+
         //Ponizej inicjalizowana jest tablica stringow, ktora pelni role interfejsu
 
         String[] consoleInterface = new String[33]
-{
+        {
             "",
-            "--------------------------------------------------------------|----------------------------",
-            "|",
-            "",
-            "",
-            "|",
-            "|----------------------------",
-            "|",
+            "════════════╩═══════════════╩═══════════════╩═════════════════╬════════════════════════════",
+            "║",                                                           
             "",
             "",
-            "|",
-            "|----------------------------",
-            "|",
+            "║",
+            "╠════════════════════════════",
+            "║",
             "",
             "",
-            "|",
-            "|----------------------------",
-            "|         Ekwipunek:",
-            "|----------------------------",
-            "|",
-            "",
-            "|",
-            "",
-            "|----------------------------",
-            "|",
+            "║",
+            "╠════════════════════════════",
+            "║",
             "",
             "",
-            "|",
+            "║",
+            "╠════════════════════════════",
+            "║         Ekwipunek:",
+            "╠════════════════════════════",
+            "║",
+            "",
+            "║",
+            "",
+            "╠════════════════════════════",
+            "║",
+            "",
+            "",
+            "║",
             "",
             "",
             "",
             "",
-            "|",
-};
+            "║",
+        };
 
         
     }

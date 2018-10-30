@@ -8,11 +8,11 @@ namespace KCKgame
 {
     class Entity
     {
-        private int level=1;
-        private int life=5;
-        private int currentLife = 5;
-        private int attack = 1;
-        private int armor=0;
+        protected int level=1;
+        protected int life=5;
+        protected int currentLife = 5;
+        protected int attack = 1;
+        protected int armor=0;
         public void ChangeLevel(int i) { if (level + i >= 1) level += i; }
         public void ChangeLife(int i) { life += i; }
         public void ChangeCurrentLife(int i) { currentLife += i; }
